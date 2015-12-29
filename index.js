@@ -1,9 +1,10 @@
-var Service = require("HAP-NodeJS").Service;
-var Characteristic = require("HAP-NodeJS").Characteristic;
 var request = require("request");
+var Service, Characteristic;
 
-module.exports = {
-  accessory: PiThermostatAccessory
+module.exports = function(homebridge){
+  Service = homebridge.hap.Service;
+  Characteristic = homebridge.hap.Characteristic;
+  homebridge.registerAccessory("homebridge-pi-thermostat", "PiThermostat", PiThermostatAccessory);
 }
 
 function PiThermostatAccessory(log, config) {
@@ -105,7 +106,7 @@ PiThermostatAccessory.prototype = {
   getCurrentTemperature: function(callback) {
     this.log("getCurrentTemperature");
 
-    this.httpRequest("http://" + this.ip_address + "/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://192.168.201.183/thermostats/1.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getCurrentTemperature: %s', error);
         callback(error);
@@ -126,7 +127,7 @@ PiThermostatAccessory.prototype = {
   getTargetTemperature: function(callback) {
     this.log("getTargetTemperature");
 
-    this.httpRequest("http://" + this.ip_address + "/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://192.168.201.183/thermostats/1.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getTargetTemperature: %s', error);
         callback(error);
@@ -192,7 +193,7 @@ PiThermostatAccessory.prototype = {
       .setCharacteristic(Characteristic.Model, "PiThermostat")
       .setCharacteristic(Characteristic.SerialNumber, "PI-1");
 
-    var thermostatService = new Service.Thermostat();
+    var thermostatService = new Service.Thermostat(this.name);
 
     thermostatService.getCharacteristic( Characteristic.CurrentHeatingCoolingState ).on( 'get', this.getCurrentHeatingCoolingState.bind(this) );
 
