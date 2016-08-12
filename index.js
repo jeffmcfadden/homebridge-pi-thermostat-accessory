@@ -29,7 +29,7 @@ PiThermostatAccessory.prototype = {
 
   httpRequest: function(url, method, callback) {
     request({
-      url: "http://" + this.ip_address + "/thermostats/1.json",
+      url: "http://" + this.ip_address + "/thermostat.json",
       method: method,
       'auth': { 'username': this.username, 'password': this.password }
     },
@@ -48,7 +48,7 @@ PiThermostatAccessory.prototype = {
     //Characteristic.CurrentHeatingCoolingState.HEAT = 1;
     //Characteristic.CurrentHeatingCoolingState.COOL = 2;
 
-    this.httpRequest("http://" + this.ip_address + "/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://" + this.ip_address + "/thermostat.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getTargetTemperature: %s', error);
         callback(error);
@@ -80,7 +80,7 @@ PiThermostatAccessory.prototype = {
   getTargetHeatingCoolingState: function(callback){
     this.log("getTargetHeatingCoolingState");
 
-    this.httpRequest("http://" + this.ip_address + "/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://" + this.ip_address + "/thermostat.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getTargetTemperature: %s', error);
         callback(error);
@@ -106,7 +106,7 @@ PiThermostatAccessory.prototype = {
   getCurrentTemperature: function(callback) {
     this.log("getCurrentTemperature");
 
-    this.httpRequest("http://192.168.201.183/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://" + this.ip_address + "/thermostat.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getCurrentTemperature: %s', error);
         callback(error);
@@ -127,7 +127,7 @@ PiThermostatAccessory.prototype = {
   getTargetTemperature: function(callback) {
     this.log("getTargetTemperature");
 
-    this.httpRequest("http://192.168.201.183/thermostats/1.json", "GET", function(error, response, data) {
+    this.httpRequest("http://" + this.ip_address + "/thermostat.json", "GET", function(error, response, data) {
       if (error) {
         this.log('getTargetTemperature: %s', error);
         callback(error);
@@ -147,7 +147,7 @@ PiThermostatAccessory.prototype = {
     this.log(targetTemperature);
 
     request({
-      url: "http://" + this.ip_address + "/thermostats/1",
+      url: "http://" + this.ip_address + "/thermostat",
       method: "PATCH",
       'auth': { 'username': this.username, 'password': this.password },
       form: { "override_value":'0.25', "thermostat[override_target_temperature]" : this.ctof(targetTemperature), "thermostat[override_hysteresis]" : "1.0", "thermostat[override_mode]" : "override_mode_cool" }
